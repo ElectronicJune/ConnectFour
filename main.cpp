@@ -1,16 +1,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <map>
 #include <limits>
 #include <cmath>
 using namespace std;
 //player is O 
 //computer is X
 //code is based on computer
-//create map for speed
-map<string, int> o_moves_result;
-map<string, int> x_moves_result;
 //hueristic score
 int hueristic_score(string board,char player){
   char opponent = player=='X' ? 'O':'X';
@@ -129,11 +125,6 @@ int result(string board){
 //minimax function, used to find the best move
 //X is the maximizing player
 int minimax(string board, char player,int depth){
-  if (player=='X' && x_moves_result.count(board)==1){
-    return x_moves_result[board];
-  }else if (o_moves_result.count(board)==1){
-    return o_moves_result[board];
-  }
   if (depth==0){
     return hueristic_score(board,player);
   }
@@ -151,11 +142,6 @@ int minimax(string board, char player,int depth){
       if (next_result<score) score = next_result;
     }
   }
-  if (player=='X'){
-    x_moves_result[board] = score;
-  }else{
-    o_moves_result[board] = score;
-  }
   return score;
 }
 
@@ -165,7 +151,7 @@ string nextBestMove(string board){
   string best_move;
   //expected is X
   for (string move : moveCombinations(board,'X')){
-    int score = minimax(move,'O',8);
+    int score = minimax(move,'O',6);
     if (score>highest_score){
       best_move = move;
       highest_score = score;
