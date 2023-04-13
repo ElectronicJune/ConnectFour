@@ -165,7 +165,7 @@ string nextBestMove(string board){
   string best_move;
   //expected is X
   for (string move : moveCombinations(board,'X')){
-    int score = minimax(move,'O',7);
+    int score = minimax(move,'O',8);
     if (score>highest_score){
       best_move = move;
       highest_score = score;
