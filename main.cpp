@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <limits>
+#include <cmath>
 using namespace std;
 //player is O 
 //computer is X
@@ -11,37 +12,34 @@ using namespace std;
 map<string, int> o_moves_result;
 map<string, int> x_moves_result;
 //hueristic score
-int hueristic_score(string board){
+int hueristic_score(string board,char player){
+  char opponent = player=='X' ? 'O':'X';
   int score = 0;
   //check for horizontal match
   for (int i=0; i<24; i++){
-    if (board[i]!='X') continue;
-    score += ((int)board[i+6]=='X')+((int)board[i+12]=='X')+((int)board[i+18]=='X');
-    score -= ((int)board[i+6]=='O')+((int)board[i+12]=='O')+((int)board[i+18]=='O');
+    if (board[i]==opponent) continue;
+    score += pow(5,((int)board[i]==player)+((int)board[i+6]==player)+((int)board[i+12]==player)+((int)board[i+18]==player));
   }
   //0 6 12 18 24 30 36 | 42
   //check for vertical match
   for (int i=0; i<42; i+=6){
     for (int j=0;j<3;j++){
-      if (board[i+j]!='X') continue;
-      score += ((int)board[i+j+1]=='X')+((int)board[i+j+2]=='X')+((int)board[i+j+3]=='X');
-      score -= ((int)board[i+j+1]=='O')+((int)board[i+j+2]=='O')+((int)board[i+j+3]=='O');
+      if (board[i+j]==opponent) continue;
+      score += pow(5,((int)board[i+j]==player)+((int)board[i+j+1]==player)+((int)board[i+j+2]==player)+((int)board[i+j+3]==player));
     }
   }
   //check for diagonal match (/)
   for (int i=3; i<27; i+=6){
     for (int j=0; j<3; j++){
-      if (board[i+j]!='X') continue;
-      score += ((int)board[i+j+5]=='X')+((int)board[i+j+10]=='X')+((int)board[i+j+15]=='X');
-      score -= ((int)board[i+j+5]=='O')+((int)board[i+j+10]=='O')+((int)board[i+j+15]=='O');
+      if (board[i+j]==opponent) continue;
+      score += pow(5,((int)board[i+j]==player)+((int)board[i+j+5]==player)+((int)board[i+j+10]==player)+((int)board[i+j+15]==player));
     }
   }
   //check for diagonal match (\)
   for (int i=21; i<45; i+=6){
     for (int j=0; j<3; j++){
-      if (board[i+j]!='X') continue;
-      score += ((int)board[i+j-7]=='X')+((int)board[i+j-14]=='X')+((int)board[i+j-21]=='X');
-      score -= ((int)board[i+j-7]=='O')+((int)board[i+j-14]=='O')+((int)board[i+j-21]=='O');
+      if (board[i+j]==opponent) continue;
+      score += pow(5,((int)board[i+j]==player)+((int)board[i+j-7]==player)+((int)board[i+j-14]==player)+((int)board[i+j-21]==player));
     }
   }
   return score;
@@ -137,10 +135,10 @@ int minimax(string board, char player,int depth){
     return o_moves_result[board];
   }
   if (depth==0){
-    return hueristic_score(board);
+    return hueristic_score(board,player);
   }
   //if the board has ended, return the result
-  if (result(board)!=2) return result(board);
+  if (result(board)!=2) return result(board)*(numeric_limits<int>::max()-1);
   //if not, find the max/min result of the next move combination
   int score = player =='X' ? numeric_limits<int>::min():numeric_limits<int>::max();
   for (string moves : moveCombinations(board,player)){
