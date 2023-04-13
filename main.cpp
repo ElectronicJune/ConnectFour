@@ -165,12 +165,13 @@ string nextBestMove(string board){
   string best_move;
   //expected is X
   for (string move : moveCombinations(board,'X')){
-    int score = minimax(move,'O',6);
+    int score = minimax(move,'O',7);
     if (score>highest_score){
       best_move = move;
       highest_score = score;
     }
   }
+  cout << "\nWIN RATE: " << highest_score << endl;
   return best_move;
 }
 
