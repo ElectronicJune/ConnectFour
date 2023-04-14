@@ -30,7 +30,7 @@ int hueristic_score(string board,char player){
   return score/count(board.begin(),board.end(),player);
 }
 
-//put pieces
+//put pieces (start from 1)
 string put(int place, string board, char player){
   for (int i=6*place-1; i>=6*place-6; i--){
     if (board[i]=='.') {
@@ -52,17 +52,6 @@ void display(string board){
     cout << "|\n";
   }
   cout << "| 1 2 3 4 5 6 7 |\n+---------------+\n";
-}
-
-//return a vector of boards after the next move
-vector<string> moveCombinations(string board, char player){
-  vector<string> combinations;
-  for (int i=0; i<7; i++){
-    if (board[i*6]=='.') {
-      combinations.push_back(put(i+1,board,player));
-    }
-  }
-  return combinations;
 }
 
 //returns the board result if ended, else return 2
@@ -105,15 +94,23 @@ int minimax(string board, char player,int depth){
   }
   //if the board has ended, return the result
   if (result(board)!=2) return result(board)*(numeric_limits<int>::max()-1);
+  for (int i=0; i<7; i++){
+    if (player=='X' && result(put(i+1,board,player))==1) {
+      return numeric_limits<int>::max();
+    }else if (result(put(i+1,board,player))==-1){
+      return numeric_limits<int>::min();
+    }
+  }
   //if not, find the max/min result of the next move combination
-  int score = player =='X' ? numeric_limits<int>::min():numeric_limits<int>::max();
-  for (string moves : moveCombinations(board,player)){
+  int score = player =='X' ? numeric_limits<int>::min() : numeric_limits<int>::max();
+  for (int i=0;i<7; i++){
+    if (board[6*i]!='.') continue;
     // if maximizing player
     if (player == 'X'){
-      int next_result =  minimax(moves,'O',depth-1);
+      int next_result =  minimax(put(i+1,board,'X'),'O',depth-1);
       if (next_result>score) score = next_result;
     }else{
-      int next_result =  minimax(moves,'X',depth-1);
+      int next_result =  minimax(put(i+1,board,'O'),'X',depth-1);
       if (next_result<score) score = next_result;
     }
   }
@@ -125,9 +122,11 @@ string nextBestMove(string board){
   int highest_score = numeric_limits<int>::min();
   string best_move;
   //expected is X
-  for (string move : moveCombinations(board,'X')){
+  for (int i=0;i<7;i++){
+    if (board[i*6]!='.') continue;
+    string move = put(i+1,board,'X');
     int score = minimax(move,'O',6);
-    if (score>highest_score){
+    if (score>=highest_score){
       best_move = move;
       highest_score = score;
     }
