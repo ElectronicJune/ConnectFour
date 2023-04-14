@@ -11,6 +11,21 @@ using namespace std;
 int hueristic_score(string board,char player){
   char opponent = player=='X' ? 'O':'X';
   int score = 0;
+  for (int i=0;i<42;i++){
+    if (board[i]==opponent) continue;
+    if (i<24) {
+      score += pow(5,((int)board[i]==player)+((int)board[i+6]==player)+((int)board[i+12]==player)+((int)board[i+18]==player));
+
+      if (i%6 > 2){
+        score += pow(5,((int)board[i]==player)+((int)board[i+5]==player)+((int)board[i+10]==player)+((int)board[i+15]==player));
+      }else{
+        score += pow(5,((int)board[i]==player)+((int)board[i+7]==player)+((int)board[i+14]==player)+((int)board[i+21]==player));
+      }
+    }
+    if (i%6 <3){
+      score += pow(5,((int)board[i]==player)+((int)board[i+1]==player)+((int)board[i+2]==player)+((int)board[i+3]==player));
+    }
+  }
   //check for horizontal match
   for (int i=0; i<24; i++){
     if (board[i]==opponent) continue;
