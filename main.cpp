@@ -3,6 +3,7 @@
 #include <vector>
 #include <limits>
 #include <cmath>
+#include <algorithm>
 using namespace std;
 //player is O 
 //computer is X
@@ -26,7 +27,7 @@ int hueristic_score(string board,char player){
       score += pow(5,((int)board[i]==player)+((int)board[i+1]==player)+((int)board[i+2]==player)+((int)board[i+3]==player));
     }
   }
-  return score;
+  return score/count(board.begin(),board.end(),player);
 }
 
 //put pieces
@@ -66,39 +67,25 @@ vector<string> moveCombinations(string board, char player){
 
 //returns the board result if ended, else return 2
 int result(string board){
-  //result is based on computer (1 for win)
-  //check for horizontal match
-  for (int i=0; i<24; i++){
+  for (int i=0;i<42;i++){
     if (board[i]=='.') continue;
-    if (board[i]==board[i+6] && board[i]==board[i+12] && board[i]==board[i+18]){
-      return (board[i]=='X') ? 1: -1;
-    }
-  }
-  //0 6 12 18 24 30 36 42
-  //check for vertical match
-  for (int i=0; i<42; i+=6){
-    for (int j=0;j<3;j++){
-      if (board[i+j]=='.') continue;
-      if (board[i+j]==board[i+j+1] && board[i+j]==board[i+j+2] && board[i+j]==board[i+j+3]){
-        return (board[i+j]=='X') ? 1: -1;
+    if (i<24) {
+      if (board[i]==board[i+6] && board[i]==board[i+12] && board[i]==board[i+18]){
+        return (board[i]=='X') ? 1: -1;
+      }
+      if (i%6 > 2){
+        if (board[i]==board[i+5] && board[i]==board[i+10] && board[i]==board[i+15]){
+          return (board[i]=='X') ? 1: -1;
+        }
+      }else{
+        if (board[i]==board[i+7] && board[i]==board[i+14] && board[i]==board[i+21]){
+          return (board[i]=='X') ? 1: -1;
+        }
       }
     }
-  }
-  //check for diagonal match (/)
-  for (int i=3; i<27; i+=6){
-    for (int j=0; j<3; j++){
-      if (board[i+j]=='.') continue;
-      if (board[i+j]==board[i+j+5] && board[i+j]==board[i+j+10] && board[i+j]==board[i+j+15]){
-        return (board[i+j]=='X') ? 1: -1;
-      }
-    }
-  }
-  //check for diagonal match (\)
-  for (int i=21; i<45; i+=6){
-    for (int j=0; j<3; j++){
-      if (board[i+j]=='.') continue;
-      if (board[i+j]==board[i+j-7] && board[i+j]==board[i+j-14] && board[i+j]==board[i+j-21]){
-        return (board[i+j]=='X') ? 1: -1;
+    if (i%6 <3){
+      if (board[i]==board[i+1] && board[i]==board[i+2] && board[i]==board[i+3]){
+        return (board[i]=='X') ? 1: -1;
       }
     }
   }
