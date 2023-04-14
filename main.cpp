@@ -26,33 +26,6 @@ int hueristic_score(string board,char player){
       score += pow(5,((int)board[i]==player)+((int)board[i+1]==player)+((int)board[i+2]==player)+((int)board[i+3]==player));
     }
   }
-  //check for horizontal match
-  for (int i=0; i<24; i++){
-    if (board[i]==opponent) continue;
-    score += pow(5,((int)board[i]==player)+((int)board[i+6]==player)+((int)board[i+12]==player)+((int)board[i+18]==player));
-  }
-  //0 6 12 18 24 30 36 | 42
-  //check for vertical match
-  for (int i=0; i<42; i+=6){
-    for (int j=0;j<3;j++){
-      if (board[i+j]==opponent) continue;
-      score += pow(5,((int)board[i+j]==player)+((int)board[i+j+1]==player)+((int)board[i+j+2]==player)+((int)board[i+j+3]==player));
-    }
-  }
-  //check for diagonal match (/)
-  for (int i=3; i<27; i+=6){
-    for (int j=0; j<3; j++){
-      if (board[i+j]==opponent) continue;
-      score += pow(5,((int)board[i+j]==player)+((int)board[i+j+5]==player)+((int)board[i+j+10]==player)+((int)board[i+j+15]==player));
-    }
-  }
-  //check for diagonal match (\)
-  for (int i=21; i<45; i+=6){
-    for (int j=0; j<3; j++){
-      if (board[i+j]==opponent) continue;
-      score += pow(5,((int)board[i+j]==player)+((int)board[i+j-7]==player)+((int)board[i+j-14]==player)+((int)board[i+j-21]==player));
-    }
-  }
   return score;
 }
 
