@@ -4,7 +4,10 @@
 #include <limits>
 #include <cmath>
 #include <algorithm>
+#include <map>
 using namespace std;
+map<string, int> x_scores;
+map<string, int> o_scores;
 //player is O 
 //computer is X
 //code is based on computer
@@ -89,6 +92,11 @@ int result(string board){
 //minimax function, used to find the best move
 //X is the maximizing player
 int minimax(string board, char player,int depth){
+  if (player=='X' && x_scores.count(board)==1){
+    return x_scores[board];
+  }else if (o_scores.count(board)==1){
+    return o_scores[board];
+  }
   if (depth==0){
     return hueristic_score(board,player);
   }
@@ -114,6 +122,11 @@ int minimax(string board, char player,int depth){
       if (next_result<score) score = next_result;
     }
   }
+  if (player=='X'){
+    x_scores[board] = score;
+  }else{
+    o_scores[board] = score;
+  }
   return score;
 }
 
@@ -125,13 +138,15 @@ string nextBestMove(string board){
   for (int i=0;i<7;i++){
     if (board[i*6]!='.') continue;
     string move = put(i+1,board,'X');
-    int score = minimax(move,'O',6);
+    int score = minimax(move,'O',7);
     if (score>=highest_score){
       best_move = move;
       highest_score = score;
     }
   }
   cout << "\nWIN RATE: " << highest_score << endl;
+  x_scores.clear();
+  o_scores.clear();
   return best_move;
 }
 
