@@ -110,7 +110,7 @@ int result(string board){
 
 //minimax function, used to find the best move
 //X is the maximizing player
-int minimax(string board, char player,int depth){
+int minimax(string board, char player,int depth, int a, int b){
   if (player=='X' && x_scores.count(board)==1){
     return x_scores[board];
   }else if (o_scores.count(board)==1){
@@ -135,11 +135,19 @@ int minimax(string board, char player,int depth){
     if (board[6*i]!='.') continue;
     // if maximizing player
     if (player == 'X'){
-      int next_result =  minimax(put(i+1,board,'X'),'O',depth-1);
-      if (next_result>score) score = next_result;
+      int next_result =  minimax(put(i+1,board,'X'),'O',depth-1,a,b);
+      score = max(next_result,score);
+      a = max(a,next_result);
+      if (b <= a){
+        break;
+      }
     }else{
-      int next_result =  minimax(put(i+1,board,'O'),'X',depth-1);
-      if (next_result<score) score = next_result;
+      int next_result =  minimax(put(i+1,board,'O'),'X',depth-1,a,b);
+      score = min(next_result,score);
+      b = min(b,next_result);
+      if (b <= a){
+        break;
+      }
     }
   }
   if (player=='X'){
@@ -159,7 +167,7 @@ string nextBestMove(string board){
   for (int i=0;i<7;i++){
     if (board[i*6]!='.') continue;
     string move = put(i+1,board,'X');
-    int score = minimax(move,'O',depth);
+    int score = minimax(move,'O',depth,numeric_limits<int>::min(),numeric_limits<int>::max());
     if (score>=highest_score){
       best_move = move;
       highest_score = score;
