@@ -15,19 +15,38 @@ map<string, int> o_scores;
 int hueristic_score(string board,char player){
   char opponent = player=='X' ? 'O':'X';
   int score = 0;
+  int link = 0;
   for (int i=0;i<42;i++){
     if (board[i]==opponent) continue;
     if (i<24) {
-      score += pow(5,((int)board[i]==player)+((int)board[i+6]==player)+((int)board[i+12]==player)+((int)board[i+18]==player));
-
+      link = 0;
+      for (int j=i; j<=(i+18); j+=6){
+        if (board[j]==opponent) break;
+        if (board[j]==player) link ++;
+      }
+      score += pow(link,3);
+      link = 0;
       if (i%6 > 2){
-        score += pow(5,((int)board[i]==player)+((int)board[i+5]==player)+((int)board[i+10]==player)+((int)board[i+15]==player));
+        for (int j=i; j<=(i+15); j+=5){
+          if (board[j]==opponent) break;
+          if (board[j]==player) link ++;
+        }
+        score += pow(link,3);
       }else{
-        score += pow(5,((int)board[i]==player)+((int)board[i+7]==player)+((int)board[i+14]==player)+((int)board[i+21]==player));
+        for (int j=i; j<=(i+21); j+=7){
+          if (board[j]==opponent) break;
+          if (board[j]==player) link ++;
+        }
+        score += pow(link,3);
       }
     }
     if (i%6 <3){
-      score += pow(5,((int)board[i]==player)+((int)board[i+1]==player)+((int)board[i+2]==player)+((int)board[i+3]==player));
+      link = 0;
+      for (int j=i; j<=(i+3); j++){
+        if (board[j]==opponent) break;
+        if (board[j]==player) link ++;
+      }
+      score += pow(link,3);
     }
   }
   return score/count(board.begin(),board.end(),player);
@@ -102,6 +121,7 @@ int minimax(string board, char player,int depth){
   }
   //if the board has ended, return the result
   if (result(board)!=2) return result(board)*(numeric_limits<int>::max()-1);
+
   for (int i=0; i<7; i++){
     if (player=='X' && result(put(i+1,board,player))==1) {
       return numeric_limits<int>::max();
