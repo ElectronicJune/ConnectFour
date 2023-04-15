@@ -160,7 +160,7 @@ int minimax(string board, char player,int depth, int a, int b){
 
 //return next best move with minimax
 string nextBestMove(string board){
-  int depth = 5 + count(board.begin(),board.end(),'X')/2;
+  int depth = 7 + count(board.begin(),board.end(),'X')/2;
   int highest_score = numeric_limits<int>::min();
   string best_move;
   //expected is X
